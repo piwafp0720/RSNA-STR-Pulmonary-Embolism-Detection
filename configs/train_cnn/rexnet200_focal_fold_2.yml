@@ -1,0 +1,65 @@
+experiment:
+  project: kaggle_rsna_2020
+  runName: rexnet200_focal_fold_2
+  offline: True
+  seed: 126
+  gpu: 0
+  n_workers: 8
+  network_type: cnn
+  
+checkpoint:
+  save_weights_only: True
+  save_top_k: 3
+  monitor: val_loss
+  mode: min
+
+train:
+  epoch: 3
+  batch_size: 32
+  n_accumulations: 1
+  val_check_interval: 0.5
+  early_stopping: False
+  amp: True
+  amp_level: O1
+
+dataset:
+  csv_path: data/fold/ver1/train-jpegs-512/train.csv
+  img_dir: data/train-jpegs-512
+  file_extension: jpg
+  fold: 2
+  k_fold: 3
+
+transform:
+  size: 512
+
+model: 
+  name: SimpleClassifier
+  args:
+    base: rexnet_200
+    n_features: 2560
+    pretrained: True
+    pool_type: gem
+    n_hiddens: 256
+    n_classes: 1
+    drop_rate: 0.5
+  load_checkpoint: 
+  freeze_start: 
+    target_epoch:
+    unfreeze_params:
+
+loss: 
+  name: FocalLoss
+  args: 
+    logits: True
+
+optimizer: 
+  name: AdamW
+  args:
+    lr: 1.e-3
+    weight_decay: 1.e-2
+  scheduler: 
+    name: CosineAnnealingLR
+    args:
+      eta_min: 1.e-4
+      last_epoch: -1
+

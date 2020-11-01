@@ -1,0 +1,66 @@
+experiment:
+  project: kaggle_rsna_2020
+  runName: lstm_rexnet200_focal_fold_0
+  offline: True
+  seed: 42
+  gpu: 0
+  n_workers: 8
+  network_type: rnn
+  
+checkpoint:
+  save_weights_only: True
+  save_top_k: 3
+  monitor: val_loss
+  mode: min
+
+train:
+  epoch: 60
+  batch_size: 64
+  n_accumulations: 1
+  val_check_interval: 1.0
+  early_stopping: False
+  amp: False
+  amp_level: O1
+
+dataset:
+  csv_path: data/fold/ver1/train-jpegs-512/train.csv
+  img_dir: dump/v1/rexnet200_focal/fold_0
+  file_extension: npz
+  fold: 0
+  k_fold: 3
+
+model: 
+  name: SequenceModel
+  args:
+    base: DoubleLSTMModel
+    n_embeddings: 2560
+    n_classes: 10
+    b_stack_diff: False
+    lstm_depth: 3
+    n_lstm_hidden: 128
+    n_fc_hidden: 256
+    drop_rate: 0.5
+    b_bidirectional: True
+    b_attention: True
+  load_checkpoint: 
+  freeze_start: 
+    target_epoch:
+    unfreeze_params:
+
+loss: 
+  name: BCEWithLogitsLoss
+  args: {
+    "reduction": none,
+  }
+
+optimizer: 
+  name: AdamW
+  args:
+    lr: 1.e-3
+    weight_decay: 0
+  scheduler: 
+    name: CosineAnnealingLR
+    args:
+      eta_min: 1.e-5
+      last_epoch: -1
+

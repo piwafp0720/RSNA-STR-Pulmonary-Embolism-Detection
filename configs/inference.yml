@@ -1,0 +1,51 @@
+version: inference
+model: rexnet200
+save_root: output
+checkpoint:
+  -
+    cnn: ## Write path to the fold-0 backbone trained with BCE ##
+    rnn: ## Write path to the rnn head attached to the above backbone ##
+  -
+    cnn: ## Write path to the fold-1 backbone trained with BCE ##
+    rnn: ## Write path to the rnn head attached to the above backbone ##
+  -
+    cnn: ## Write path to the fold-2 backbone trained with BCE ##
+    rnn: ## Write path to the rnn head attached to the above backbone ##
+  -
+    cnn: ## Write path to the fold-0 backbone trained with Focal ##
+    rnn: ## Write path to the rnn head attached to the above backbone ##
+  -
+    cnn: ## Write path to the fold-1 backbone trained with Focal ##
+    rnn: ## Write path to the rnn head attached to the above backbone ##
+  -
+    cnn: ## Write path to the fold-2 backbone trained with Focal ##
+    rnn: ## Write path to the rnn head attached to the above backbone ##
+  ## example
+  # -
+  #   cnn: wandb/run-20201020_060628-2cpwvzq3/files/checkpoints/epoch=01-val_loss=0.095.ckpt
+  #   rnn: wandb/run-20201021_135533-33iuaotu/files/checkpoints/epoch=32-val_loss=0.145.ckpt
+
+batch_size: 1
+chunk_size_list: 
+  - 64
+  - 64
+  - 64
+  - 64
+  - 64
+  - 64
+n_workers: 8
+n_tta: 1
+seed: 42
+gpu: 
+  - 0
+
+transform:
+  size: 512
+
+dataset:
+  csv_path: data/test.csv
+  img_dir: data/test
+  file_extension: dcm
+  mode: test
+  fold: -1
+  network_type: cnn_rnn

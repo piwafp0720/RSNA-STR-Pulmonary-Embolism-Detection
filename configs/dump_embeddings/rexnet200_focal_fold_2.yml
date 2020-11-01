@@ -1,0 +1,13 @@
+version: v1
+model: rexnet200_focal
+fold: 2
+save_root: dump
+csv_path: data/fold/ver1/train-jpegs-512/train.csv
+img_dir: data/npz/train-jpegs-512
+ckpt_path: ## Write path to the fold-2 backbone trained with focal loss ##
+# example)
+# ckpt_path: wandb/run-20201020_060628-2cpwvzq3/files/checkpoints/epoch=01-val_loss=0.095.ckpt
+n_workers: 8
+gpu: 0
+image_size: 512
+chunk_size: 16
